@@ -30,10 +30,20 @@ def test_legacy_curve_decays_without_inflow() -> None:
 
 
 def test_steady_inflow_holds_level() -> None:
-    """Стационарный приток (депонирование с 1972 г.) поддерживает генерацию."""
-    inp = LandGEMInput(annual_inflow_tonnes=375_000, horizon_years=20)
-    monthly = monthly_ch4_m3(inp)
-    assert monthly[-1] > 0.9 * monthly[0]
+    """Стационарный приток удерживает уровень генерации.
+
+    За 20 лет legacy-компонента обязана затухнуть как e^(-k·T) ≈ 0.55, поэтому
+    полное падение кривой ограничено (~20 % при доле legacy ~44 % в год 1),
+    а итоговый уровень в разы выше сценария «без притока» (там осталась бы
+    только затухшая legacy-компонента).
+    """
+    with_inflow = LandGEMInput(annual_inflow_tonnes=375_000, horizon_years=20)
+    monthly = monthly_ch4_m3(with_inflow)
+    assert monthly[-1] > 0.75 * monthly[0]
+
+    without_inflow = LandGEMInput(annual_inflow_tonnes=0.0, horizon_years=20)
+    legacy_only = monthly_ch4_m3(without_inflow)
+    assert monthly[-1] > 2.5 * legacy_only[-1]
 
 
 def test_history_trend_positive() -> None:

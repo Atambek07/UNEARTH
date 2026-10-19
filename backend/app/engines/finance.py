@@ -95,6 +95,7 @@ def run_finance(inp: FinanceInput) -> dict:
         * cfg.BLOCK_REWARD_BTC
         / cfg.NETWORK_HASHRATE_THS
         * cfg.ANTMINER_HASHRATE_TH
+        * inp.btc_price  # BTC/день → USD/день при стартовом курсе
         * (1.0 - cfg.POOL_FEE_SHARE)
     )  # $/день на асик при текущем btc_start → умножается на btc_t/btc_start
 
@@ -113,12 +114,16 @@ def run_finance(inp: FinanceInput) -> dict:
     ai_month = rent * 24.0 * cfg.GPUS_PER_AI_SERVER * days * ai_eff
     revenue_month = mining_month + ai_month
     revenue_years = revenue_month.reshape(inp.n_sims, years, 12).sum(axis=2)  # [sims, years]
+    mining_years = mining_month.reshape(inp.n_sims, years, 12).sum(axis=2)
+    ai_years = ai_month.reshape(inp.n_sims, years, 12).sum(axis=2)
 
     power_share_years = share.reshape(years, 12).mean(axis=1)  # [years]
     opex_years = inp.opex_variable_annual_usd * power_share_years + inp.opex_fixed_annual_usd
 
     net_years = revenue_years - opex_years[None, :]
     rev_p10, rev_p50, rev_p90 = np.percentile(revenue_years, [10, 50, 90], axis=0)
+    mining_p50 = np.percentile(mining_years, 50, axis=0)
+    ai_p50 = np.percentile(ai_years, 50, axis=0)
     net_p10, net_p50, net_p90 = np.percentile(net_years, [10, 50, 90], axis=0)
 
     # CAPEX
@@ -196,10 +201,15 @@ def run_finance(inp: FinanceInput) -> dict:
         "capex_breakdown": capex_breakdown,
         "annual": annual,
         "chart": chart,
+        "revenue_split": {
+            "mining_p50_usd": [round(float(x)) for x in mining_p50],
+            "ai_p50_usd": [round(float(x)) for x in ai_p50],
+        },
         "year0": {"capex_usd": round(capex_total), "cumulative_cashflow_p50_usd": round(float(cum_disc[0]))},
         "payback_years": payback_years,
         "irr": round(irr, 3) if irr is not None else None,
         "wacc": cfg.WACC,
+        "disclaimer": cfg.DISCLAIMER,
         "totals": {
             "revenue_p50_usd": round(float(rev_p50.sum())),
             "net_profit_p50_usd": round(float(net_p50.sum())),

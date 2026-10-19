@@ -6,6 +6,9 @@ import { TopCards } from './TopCards';
 import { ForecastChart } from './ForecastChart';
 import { FinanceChart } from './FinanceChart';
 import { AllocationPanel } from './AllocationPanel';
+import { PlanPanel } from './PlanPanel';
+import { CarbonPanel } from './CarbonPanel';
+import { ScenarioPanel } from './ScenarioPanel';
 import { SectorMap } from './SectorMap';
 import { MaintenancePanel } from './MaintenancePanel';
 
@@ -75,6 +78,13 @@ export function DashboardLayout(): JSX.Element {
           </div>
 
           <AllocationPanel />
+
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+            <PlanPanel />
+            <CarbonPanel />
+          </div>
+
+          <ScenarioPanel />
           <SectorMap />
           <MaintenancePanel />
 

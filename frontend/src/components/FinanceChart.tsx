@@ -27,7 +27,8 @@ export function FinanceChart(): JSX.Element {
             <span className="text-[11px] text-slate-500">
               CAPEX {fmtUsd(finance.capex_total_usd)} · окупаемость:{' '}
               {finance.payback_years !== null ? `${fmtNum(finance.payback_years)} г` : 'за горизонтом'} ·
-              IRR: {finance.irr !== null ? fmtPercent(finance.irr) : '—'}
+              IRR: {finance.irr !== null ? fmtPercent(finance.irr) : '—'} · налоги:{' '}
+              {fmtUsd(finance.fiscal?.totals.taxes_total_usd ?? 0)}
             </span>
           ) : null
         }

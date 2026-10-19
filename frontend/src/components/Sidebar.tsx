@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Bot, Loader2, Play, RotateCcw, SlidersHorizontal } from 'lucide-react';
 import { PUE_DC, selectManualUsedMw, useSimulation } from '../store/simulationStore';
+import type { FiscalRegime, MarketProvider } from '../types';
 import { fmtNum } from '../utils/format';
 
 function Section({ title, children }: { title: string; children: ReactNode }): JSX.Element {
@@ -99,6 +100,11 @@ export function Sidebar(): JSX.Element {
   const setManual = useSimulation((s) => s.setManual);
   const setMonthsOperated = useSimulation((s) => s.setMonthsOperated);
   const resetToBishkekDefaults = useSimulation((s) => s.resetToBishkekDefaults);
+  const marketProvider = useSimulation((s) => s.marketProvider);
+  const setMarketProvider = useSimulation((s) => s.setMarketProvider);
+  const marketQuote = useSimulation((s) => s.marketQuote);
+  const fiscalRegime = useSimulation((s) => s.fiscalRegime);
+  const setFiscalRegime = useSimulation((s) => s.setFiscalRegime);
   const run = useSimulation((s) => s.run);
 
   const manualUsedMw = selectManualUsedMw({ manual });
@@ -207,6 +213,48 @@ export function Sidebar(): JSX.Element {
             max={120}
             onChange={setMonthsOperated}
           />
+        </Section>
+
+        <Section title="Источник рынка">
+          <select
+            value={marketProvider}
+            onChange={(event) => setMarketProvider(event.target.value as MarketProvider)}
+            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 focus:outline-none"
+          >
+            <option value="synthetic">Синтетика (детерминизм)</option>
+            <option value="auto">Auto: live → синтетика</option>
+            <option value="live">Live: CoinGecko + mempool.space</option>
+          </select>
+          {marketQuote ? (
+            <p className="text-[11px] leading-snug text-slate-500">
+              Источник:{' '}
+              <b className={marketQuote.source === 'live' ? 'text-emerald-300' : 'text-slate-300'}>
+                {marketQuote.source === 'live' ? 'live' : 'синтетика'}
+              </b>
+              {marketQuote.source === 'live'
+                ? ` · BTC $${fmtNum(marketQuote.btc_price_usd, 0)}`
+                : ''}
+              {marketQuote.network_hashrate_ths
+                ? ` · ${fmtNum(marketQuote.network_hashrate_ths / 1e6, 1)} EH/s`
+                : ''}
+            </p>
+          ) : null}
+          <p className="text-[11px] leading-snug text-slate-600">
+            В live-режиме курс BTC и хешрейт берутся с публичных API; при сбое — откат на синтетику с пометкой.
+          </p>
+        </Section>
+
+        <Section title="Налоговый режим КР">
+          <select
+            value={fiscalRegime}
+            onChange={(event) => setFiscalRegime(event.target.value as FiscalRegime)}
+            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 focus:outline-none"
+          >
+            <option value="kr_htp">ПВТ: 1 % выручки IT, майнинг отдельно</option>
+            <option value="kz_aifc">Astana Hub (KZ): сравнение режимов</option>
+            <option value="kr_general">Общий: прибыль 10 % + майнинг-налог</option>
+            <option value="none">Без налогов (pretax)</option>
+          </select>
         </Section>
 
         <Section title="Режим распределения">

@@ -1,0 +1,1733 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "UNEARTH — Smart LFG-to-Energy & Computational Grid Simulator",
+    "description": "MVP-симулятор Бишкекского полигона: LandGEM + ML-прогноз метана, Smart Grid балансировщик, предиктивное обслуживание ГПУ по H2S, финансовая модель и Green Tracker (CO2, Фонд озеленения).",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_api_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Health Api Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/market/current": {
+      "get": {
+        "summary": "Get Market Current",
+        "description": "Текущий рынок: live-данные (BTC, хешрейт) или синтетика + ML-прогноз.",
+        "operationId": "get_market_current_api_market_current_get",
+        "parameters": [
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "auto",
+              "title": "Provider"
+            }
+          },
+          {
+            "name": "seed",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 42,
+              "title": "Seed"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Market Current Api Market Current Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/forecast": {
+      "post": {
+        "summary": "Post Forecast",
+        "operationId": "post_forecast_api_forecast_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForecastRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Post Forecast Api Forecast Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/optimize": {
+      "post": {
+        "summary": "Post Optimize",
+        "operationId": "post_optimize_api_optimize_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OptimizeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Post Optimize Api Optimize Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/optimize/path": {
+      "post": {
+        "summary": "Post Optimize Path",
+        "description": "Упреждающий план на горизонт: DP со стоимостью переключений и резервом.",
+        "operationId": "post_optimize_path_api_optimize_path_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OptimizePathRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Post Optimize Path Api Optimize Path Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/maintenance": {
+      "post": {
+        "summary": "Post Maintenance",
+        "operationId": "post_maintenance_api_maintenance_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaintenanceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Post Maintenance Api Maintenance Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/finance": {
+      "post": {
+        "summary": "Post Finance",
+        "operationId": "post_finance_api_finance_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FinanceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Post Finance Api Finance Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/carbon": {
+      "post": {
+        "summary": "Post Carbon",
+        "operationId": "post_carbon_api_carbon_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CarbonRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Post Carbon Api Carbon Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/currency": {
+      "post": {
+        "summary": "Post Currency",
+        "description": "Валютный блок: конвертация, репатриация и хеджирование выручки.",
+        "operationId": "post_currency_api_currency_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CurrencyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Post Currency Api Currency Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/fiscal/compare": {
+      "post": {
+        "summary": "Post Fiscal Compare",
+        "description": "Сравнение налоговых режимов КР и Astana Hub при одинаковой базе.",
+        "operationId": "post_fiscal_compare_api_fiscal_compare_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FiscalCompareRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Post Fiscal Compare Api Fiscal Compare Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sectors": {
+      "post": {
+        "summary": "Post Sectors",
+        "operationId": "post_sectors_api_sectors_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SectorsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Post Sectors Api Sectors Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/simulation/run": {
+      "post": {
+        "summary": "Post Simulation Run",
+        "description": "Полный прогон: прогноз → оптимизация → план → обслуживание → карбон → финансы → сектора.",
+        "operationId": "post_simulation_run_api_simulation_run_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForecastRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Post Simulation Run Api Simulation Run Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/scenarios": {
+      "post": {
+        "summary": "Create Scenario",
+        "description": "Сохраняет сценарий; при run=true сначала прогоняет симуляцию.",
+        "operationId": "create_scenario_api_scenarios_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScenarioCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Create Scenario Api Scenarios Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get Scenarios",
+        "operationId": "get_scenarios_api_scenarios_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Scenarios Api Scenarios Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/scenarios/{scenario_id}": {
+      "get": {
+        "summary": "Get Scenario",
+        "operationId": "get_scenario_api_scenarios__scenario_id__get",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Scenario Api Scenarios  Scenario Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Scenario",
+        "operationId": "delete_scenario_api_scenarios__scenario_id__delete",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Delete Scenario Api Scenarios  Scenario Id  Delete"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/scenarios/compare": {
+      "post": {
+        "summary": "Compare Scenarios",
+        "operationId": "compare_scenarios_api_scenarios_compare_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScenarioCompareRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Compare Scenarios Api Scenarios Compare Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Root",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Root  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CarbonRequest": {
+        "properties": {
+          "monthly_ch4_m3_delivered": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "minItems": 12,
+            "title": "Monthly Ch4 M3 Delivered",
+            "description": "Уничтоженный CH4 по месяцам, м³ (длина кратна 12)"
+          },
+          "gwp": {
+            "type": "number",
+            "maximum": 100.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Gwp",
+            "default": 28.0
+          },
+          "buffer_share": {
+            "type": "number",
+            "exclusiveMaximum": 1.0,
+            "minimum": 0.0,
+            "title": "Buffer Share",
+            "default": 0.2
+          },
+          "verification_lag_months": {
+            "type": "integer",
+            "maximum": 36.0,
+            "minimum": 0.0,
+            "title": "Verification Lag Months",
+            "default": 12
+          },
+          "price_p10": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Price P10",
+            "default": 8.0
+          },
+          "price_p50": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Price P50",
+            "default": 15.0
+          },
+          "price_p90": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Price P90",
+            "default": 25.0
+          },
+          "validation_cost_usd": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Validation Cost Usd",
+            "default": 25000.0
+          },
+          "verification_cost_usd_year": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Verification Cost Usd Year",
+            "default": 12000.0
+          },
+          "monitoring_cost_usd_year": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Monitoring Cost Usd Year",
+            "default": 8000.0
+          },
+          "issuance_fee_usd_per_credit": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Issuance Fee Usd Per Credit",
+            "default": 0.1
+          },
+          "discount_rate": {
+            "type": "number",
+            "maximum": 0.5,
+            "minimum": 0.0,
+            "title": "Discount Rate",
+            "default": 0.1
+          }
+        },
+        "type": "object",
+        "required": [
+          "monthly_ch4_m3_delivered"
+        ],
+        "title": "CarbonRequest",
+        "description": "Карбоновый модуль (CDM ACM0001): параметры кредита и базовая линия."
+      },
+      "CurrencyRequest": {
+        "properties": {
+          "usd_kgs_rate": {
+            "type": "number",
+            "maximum": 1000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Usd Kgs Rate",
+            "default": 87.4
+          },
+          "conversion_spread": {
+            "type": "number",
+            "maximum": 0.2,
+            "minimum": 0.0,
+            "title": "Conversion Spread",
+            "default": 0.015
+          },
+          "repatriation_share": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Repatriation Share",
+            "default": 1.0
+          },
+          "repatriation_cost_share": {
+            "type": "number",
+            "maximum": 0.2,
+            "minimum": 0.0,
+            "title": "Repatriation Cost Share",
+            "default": 0.005
+          },
+          "hedging_cost_share": {
+            "type": "number",
+            "maximum": 0.2,
+            "minimum": 0.0,
+            "title": "Hedging Cost Share",
+            "default": 0.01
+          },
+          "annual_usd": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "maxItems": 30,
+            "minItems": 1,
+            "title": "Annual Usd"
+          }
+        },
+        "type": "object",
+        "required": [
+          "annual_usd"
+        ],
+        "title": "CurrencyRequest",
+        "description": "Валютный расчёт по годам: конвертация, репатриация, хеджирование."
+      },
+      "FinanceRequest": {
+        "properties": {
+          "horizon_years": {
+            "type": "integer",
+            "maximum": 25.0,
+            "minimum": 3.0,
+            "title": "Horizon Years"
+          },
+          "monthly_power_mw": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "minItems": 12,
+            "title": "Monthly Power Mw"
+          },
+          "monthly_ch4_m3_delivered": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "minItems": 12,
+            "title": "Monthly Ch4 M3 Delivered"
+          },
+          "miners_count": {
+            "type": "integer",
+            "maximum": 100000.0,
+            "minimum": 0.0,
+            "title": "Miners Count"
+          },
+          "ai_servers_count": {
+            "type": "integer",
+            "maximum": 100000.0,
+            "minimum": 0.0,
+            "title": "Ai Servers Count"
+          },
+          "btc_price": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Btc Price",
+            "default": 65000.0
+          },
+          "gpu_rent_usd_per_gpu_hour": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Gpu Rent Usd Per Gpu Hour",
+            "default": 2.0
+          },
+          "opex_variable_annual_usd": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Opex Variable Annual Usd",
+            "default": 0.0
+          },
+          "opex_fixed_annual_usd": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Opex Fixed Annual Usd",
+            "default": 0.0
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Seed",
+            "default": 42
+          },
+          "n_sims": {
+            "type": "integer",
+            "maximum": 2000.0,
+            "minimum": 50.0,
+            "title": "N Sims",
+            "default": 400
+          },
+          "fiscal_regime": {
+            "type": "string",
+            "enum": [
+              "none",
+              "kr_general",
+              "kr_htp",
+              "kz_aifc"
+            ],
+            "title": "Fiscal Regime",
+            "description": "Фискальный режим: none (pretax), kr_general (прибыль 10 % + майнинг-налог), kr_htp (резидент ПВТ), kz_aifc (Astana Hub, Казахстан — сравнение)",
+            "default": "kr_htp"
+          },
+          "fx": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FxRequest"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Валютный блок; None — дефолтный курс и спреды"
+          }
+        },
+        "type": "object",
+        "required": [
+          "horizon_years",
+          "monthly_power_mw",
+          "monthly_ch4_m3_delivered",
+          "miners_count",
+          "ai_servers_count"
+        ],
+        "title": "FinanceRequest",
+        "description": "Входы финансового блока (Модуль 2в)."
+      },
+      "FiscalCompareRequest": {
+        "properties": {
+          "profit_before_tax_usd": {
+            "type": "number",
+            "title": "Profit Before Tax Usd",
+            "default": 10000000.0
+          },
+          "ai_revenue_usd": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Ai Revenue Usd",
+            "default": 0.0
+          },
+          "mining_revenue_usd": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Mining Revenue Usd",
+            "default": 0.0
+          },
+          "miners_energy_kwh_year": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Miners Energy Kwh Year",
+            "default": 0.0
+          },
+          "labor_usd_year": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Labor Usd Year",
+            "default": 0.0
+          },
+          "fx_rate_kgs_per_usd": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1000.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fx Rate Kgs Per Usd"
+          },
+          "pe_risk_share": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pe Risk Share",
+            "description": "Доля прибыли КЗ-юрлица, относимая к КР (риск ПП)"
+          }
+        },
+        "type": "object",
+        "title": "FiscalCompareRequest",
+        "description": "Сравнение всех налоговых режимов при одинаковой базе."
+      },
+      "ForecastRequest": {
+        "properties": {
+          "total_legacy_tonnes": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Total Legacy Tonnes",
+            "description": "Накопленные ТБО, т (ЕБРР/Мэрия: ~20 млн)",
+            "default": 20000000.0
+          },
+          "annual_inflow_tonnes": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Annual Inflow Tonnes",
+            "description": "Приток отходов, т/год (350–400 тыс.)",
+            "default": 375000.0
+          },
+          "lo_m3_per_tonne": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Lo M3 Per Tonne",
+            "description": "Потенциал метана L0, м³/т (70–80, EPA)",
+            "default": 75.0
+          },
+          "k_per_year": {
+            "type": "number",
+            "maximum": 0.5,
+            "minimum": 0.001,
+            "title": "K Per Year",
+            "description": "Скорость разложения k, 1/год (0.02–0.04, аридный климат)",
+            "default": 0.03
+          },
+          "methane_fraction": {
+            "type": "number",
+            "exclusiveMaximum": 1.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Methane Fraction",
+            "description": "Доля CH4 в свалочном газе (50–55 %)",
+            "default": 0.52
+          },
+          "horizon_years": {
+            "type": "integer",
+            "maximum": 25.0,
+            "minimum": 3.0,
+            "title": "Horizon Years",
+            "default": 15
+          },
+          "collection_efficiency": {
+            "type": "number",
+            "maximum": 1.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Collection Efficiency",
+            "default": 0.75
+          },
+          "genset_availability": {
+            "type": "number",
+            "maximum": 1.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Genset Availability",
+            "default": 0.92
+          },
+          "kwh_per_m3_ch4": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Kwh Per M3 Ch4",
+            "default": 3.5
+          },
+          "use_prophet": {
+            "type": "boolean",
+            "title": "Use Prophet",
+            "description": "Использовать Prophet, если пакет установлен (иначе builtin-seasonal-ar1)",
+            "default": false
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Seed",
+            "default": 42
+          }
+        },
+        "type": "object",
+        "title": "ForecastRequest",
+        "description": "Входы Модуля 1: физика полигона + настройки ML-прогноза."
+      },
+      "FxRequest": {
+        "properties": {
+          "usd_kgs_rate": {
+            "type": "number",
+            "maximum": 1000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Usd Kgs Rate",
+            "default": 87.4
+          },
+          "conversion_spread": {
+            "type": "number",
+            "maximum": 0.2,
+            "minimum": 0.0,
+            "title": "Conversion Spread",
+            "default": 0.015
+          },
+          "repatriation_share": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Repatriation Share",
+            "default": 1.0
+          },
+          "repatriation_cost_share": {
+            "type": "number",
+            "maximum": 0.2,
+            "minimum": 0.0,
+            "title": "Repatriation Cost Share",
+            "default": 0.005
+          },
+          "hedging_cost_share": {
+            "type": "number",
+            "maximum": 0.2,
+            "minimum": 0.0,
+            "title": "Hedging Cost Share",
+            "default": 0.01
+          }
+        },
+        "type": "object",
+        "title": "FxRequest",
+        "description": "Параметры валютного блока (конвертация и репатриация)."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "MaintenanceRequest": {
+        "properties": {
+          "installed_mw": {
+            "type": "number",
+            "maximum": 500.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Installed Mw"
+          },
+          "ch4_m3_month": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Ch4 M3 Month",
+            "description": "CH4, поданный на ГПУ за месяц, м³ (с учётом отбора газа)"
+          },
+          "h2s_ppm": {
+            "type": "number",
+            "maximum": 1000.0,
+            "minimum": 0.0,
+            "title": "H2S Ppm",
+            "default": 30.0
+          },
+          "methane_fraction": {
+            "type": "number",
+            "exclusiveMaximum": 1.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Methane Fraction",
+            "default": 0.52
+          },
+          "months_operated": {
+            "type": "integer",
+            "maximum": 600.0,
+            "minimum": 0.0,
+            "title": "Months Operated",
+            "default": 6
+          },
+          "genset_availability": {
+            "type": "number",
+            "maximum": 1.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Genset Availability",
+            "default": 0.92
+          },
+          "kwh_per_m3_ch4": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Kwh Per M3 Ch4",
+            "default": 3.5
+          }
+        },
+        "type": "object",
+        "required": [
+          "installed_mw",
+          "ch4_m3_month"
+        ],
+        "title": "MaintenanceRequest",
+        "description": "Входы предиктивного обслуживания (Модуль 2б)."
+      },
+      "OptimizePathRequest": {
+        "properties": {
+          "monthly_power_mw": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "maxItems": 600,
+            "minItems": 3,
+            "title": "Monthly Power Mw",
+            "description": "Доступная мощность по месяцам (из /api/forecast)"
+          },
+          "monthly_moisture": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Monthly Moisture",
+            "description": "Индекс влажности по месяцам; None → нейтральная 1.0"
+          },
+          "monthly_btc_price": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Monthly Btc Price",
+            "description": "Ожидаемый путь курса BTC по месяцам; None → константа btc_price"
+          },
+          "ch4_fraction": {
+            "type": "number",
+            "exclusiveMaximum": 1.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Ch4 Fraction",
+            "default": 0.52
+          },
+          "h2s_ppm": {
+            "type": "number",
+            "maximum": 1000.0,
+            "minimum": 0.0,
+            "title": "H2S Ppm",
+            "default": 30.0
+          },
+          "btc_price": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Btc Price"
+          },
+          "gpu_rent_usd_per_gpu_hour": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gpu Rent Usd Per Gpu Hour"
+          },
+          "market_provider": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "live",
+              "synthetic"
+            ],
+            "title": "Market Provider",
+            "default": "synthetic"
+          },
+          "gpu_demand_cap": {
+            "type": "integer",
+            "maximum": 1000000.0,
+            "minimum": 0.0,
+            "title": "Gpu Demand Cap",
+            "default": 1000
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Seed",
+            "default": 42
+          },
+          "switching_cost_miner_usd": {
+            "type": "number",
+            "maximum": 100000.0,
+            "minimum": 0.0,
+            "title": "Switching Cost Miner Usd",
+            "default": 20.0
+          },
+          "switching_cost_ai_usd": {
+            "type": "number",
+            "maximum": 1000000.0,
+            "minimum": 0.0,
+            "title": "Switching Cost Ai Usd",
+            "default": 150.0
+          }
+        },
+        "type": "object",
+        "required": [
+          "monthly_power_mw"
+        ],
+        "title": "OptimizePathRequest",
+        "description": "Упреждающий многошаговый план (квартальный DP, switching costs, резерв)."
+      },
+      "OptimizeRequest": {
+        "properties": {
+          "available_mw": {
+            "type": "number",
+            "maximum": 500.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Available Mw",
+            "description": "Доступная электрическая мощность, МВт (из /api/forecast)"
+          },
+          "ch4_fraction": {
+            "type": "number",
+            "exclusiveMaximum": 1.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Ch4 Fraction",
+            "default": 0.52
+          },
+          "h2s_ppm": {
+            "type": "number",
+            "maximum": 1000.0,
+            "minimum": 0.0,
+            "title": "H2S Ppm",
+            "default": 30.0
+          },
+          "btc_price": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Btc Price",
+            "description": "Курс BTC; None → из провайдера рынка"
+          },
+          "gpu_rent_usd_per_gpu_hour": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gpu Rent Usd Per Gpu Hour",
+            "description": "Аренда GPU; None → дефолт"
+          },
+          "market_provider": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "live",
+              "synthetic"
+            ],
+            "title": "Market Provider",
+            "description": "Источник рынка: live-данные или синтетика",
+            "default": "synthetic"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "manual"
+            ],
+            "title": "Mode",
+            "default": "auto"
+          },
+          "manual_miners": {
+            "type": "integer",
+            "maximum": 100000.0,
+            "minimum": 0.0,
+            "title": "Manual Miners",
+            "default": 0
+          },
+          "manual_ai_servers": {
+            "type": "integer",
+            "maximum": 100000.0,
+            "minimum": 0.0,
+            "title": "Manual Ai Servers",
+            "default": 0
+          },
+          "gpu_demand_cap": {
+            "type": "integer",
+            "maximum": 1000000.0,
+            "minimum": 0.0,
+            "title": "Gpu Demand Cap",
+            "default": 1000
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Seed",
+            "default": 42
+          }
+        },
+        "type": "object",
+        "required": [
+          "available_mw"
+        ],
+        "title": "OptimizeRequest",
+        "description": "Входы Smart Grid балансировщика (Модуль 2а)."
+      },
+      "ScenarioCompareRequest": {
+        "properties": {
+          "ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "minItems": 2,
+            "title": "Ids"
+          }
+        },
+        "type": "object",
+        "required": [
+          "ids"
+        ],
+        "title": "ScenarioCompareRequest",
+        "description": "Сравнение сохранённых сценариев по ключевым метрикам."
+      },
+      "ScenarioCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Notes",
+            "default": ""
+          },
+          "inputs": {
+            "$ref": "#/components/schemas/ScenarioInputs"
+          },
+          "run": {
+            "type": "boolean",
+            "title": "Run",
+            "description": "Прогнать симуляцию с inputs и сохранить дайджест результатов",
+            "default": true
+          },
+          "results": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Results",
+            "description": "Готовые результаты (используются при run=false); иначе сохраняется пустой дайджест"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "inputs"
+        ],
+        "title": "ScenarioCreate",
+        "description": "Сохранение сценария: run=true — прогнать симуляцию и сохранить дайджест."
+      },
+      "ScenarioInputs": {
+        "properties": {
+          "total_legacy_tonnes": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Total Legacy Tonnes",
+            "default": 20000000.0
+          },
+          "annual_inflow_tonnes": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Annual Inflow Tonnes",
+            "default": 375000.0
+          },
+          "lo_m3_per_tonne": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Lo M3 Per Tonne",
+            "default": 75.0
+          },
+          "k_per_year": {
+            "type": "number",
+            "maximum": 0.5,
+            "minimum": 0.001,
+            "title": "K Per Year",
+            "default": 0.03
+          },
+          "methane_fraction": {
+            "type": "number",
+            "exclusiveMaximum": 1.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Methane Fraction",
+            "default": 0.52
+          },
+          "horizon_years": {
+            "type": "integer",
+            "maximum": 25.0,
+            "minimum": 3.0,
+            "title": "Horizon Years",
+            "default": 15
+          },
+          "collection_efficiency": {
+            "type": "number",
+            "maximum": 1.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Collection Efficiency",
+            "default": 0.75
+          },
+          "genset_availability": {
+            "type": "number",
+            "maximum": 1.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Genset Availability",
+            "default": 0.92
+          },
+          "kwh_per_m3_ch4": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Kwh Per M3 Ch4",
+            "default": 3.5
+          },
+          "h2s_ppm": {
+            "type": "number",
+            "maximum": 1000.0,
+            "minimum": 0.0,
+            "title": "H2S Ppm",
+            "default": 30.0
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "manual"
+            ],
+            "title": "Mode",
+            "default": "auto"
+          },
+          "manual_miners": {
+            "type": "integer",
+            "maximum": 100000.0,
+            "minimum": 0.0,
+            "title": "Manual Miners",
+            "default": 0
+          },
+          "manual_ai_servers": {
+            "type": "integer",
+            "maximum": 100000.0,
+            "minimum": 0.0,
+            "title": "Manual Ai Servers",
+            "default": 0
+          },
+          "btc_price": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Btc Price"
+          },
+          "gpu_rent_usd_per_gpu_hour": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gpu Rent Usd Per Gpu Hour"
+          },
+          "market_provider": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "live",
+              "synthetic"
+            ],
+            "title": "Market Provider",
+            "default": "synthetic"
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Seed",
+            "default": 42
+          }
+        },
+        "type": "object",
+        "title": "ScenarioInputs",
+        "description": "Параметры сценария (сохраняются и используются при повторном прогоне)."
+      },
+      "SectorsRequest": {
+        "properties": {
+          "ch4_m3_delivered_month": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Ch4 M3 Delivered Month",
+            "description": "CH4, поданный из секторов за месяц, м³"
+          },
+          "month": {
+            "type": "integer",
+            "maximum": 12.0,
+            "minimum": 1.0,
+            "title": "Month",
+            "default": 10
+          },
+          "rows": {
+            "type": "integer",
+            "maximum": 20.0,
+            "minimum": 2.0,
+            "title": "Rows",
+            "default": 6
+          },
+          "cols": {
+            "type": "integer",
+            "maximum": 20.0,
+            "minimum": 2.0,
+            "title": "Cols",
+            "default": 8
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Seed",
+            "default": 42
+          }
+        },
+        "type": "object",
+        "required": [
+          "ch4_m3_delivered_month"
+        ],
+        "title": "SectorsRequest",
+        "description": "Входы карты секторов."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

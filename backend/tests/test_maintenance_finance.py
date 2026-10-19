@@ -23,6 +23,24 @@ def test_scrubber_and_health_react_to_h2s() -> None:
     assert all(g["rul_months"] >= 0 for g in low["generators"])
 
 
+def test_mining_revenue_scale_regression() -> None:
+    """Регрессия: доход майнера считается в USD (курс учтён), а не в BTC."""
+    inp = FinanceInput(
+        horizon_years=3,
+        monthly_power_mw=[13.0] * 36,
+        monthly_ch4_m3_delivered=[2_000_000.0] * 36,
+        miners_count=1000,
+        ai_servers_count=0,
+        btc_price=65_000.0,
+        n_sims=50,
+    )
+    res = run_finance(inp)
+    mining_year1 = res["revenue_split"]["mining_p50_usd"][0]
+    # 1000 ASIC × ~4.5 $/день × 365 ≈ 1.6 млн $; проверяем порядок величины
+    assert 0.8e6 < mining_year1 < 4.0e6
+    assert res["revenue_split"]["ai_p50_usd"][0] == 0
+
+
 def test_finance_monte_carlo_structure() -> None:
     inp = FinanceInput(
         horizon_years=15,
