@@ -11,20 +11,22 @@ import {
 } from 'recharts';
 import { useSimulation } from '../store/simulationStore';
 import { fmtNum, fmtPercent, fmtUsd } from '../utils/format';
+import { useIsPhone } from '../utils/useMediaQuery';
 import { Card, CardTitle, ChartTooltip, LegendChip, Spinner } from './primitives';
 
 export function FinanceChart(): JSX.Element {
   const finance = useSimulation((s) => s.finance);
   const status = useSimulation((s) => s.status.finance);
+  const isPhone = useIsPhone();
 
   const data = finance?.chart ?? [];
 
   return (
-    <Card>
+    <Card className="min-w-0">
       <CardTitle
         right={
           finance ? (
-            <span className="text-[11px] text-slate-500">
+            <span className="text-xs text-slate-500 sm:text-[11px]">
               CAPEX {fmtUsd(finance.capex_total_usd)} · окупаемость:{' '}
               {finance.payback_years !== null ? `${fmtNum(finance.payback_years)} г` : 'за горизонтом'} ·
               IRR: {finance.irr !== null ? fmtPercent(finance.irr) : '—'} · налоги:{' '}
@@ -37,7 +39,7 @@ export function FinanceChart(): JSX.Element {
       </CardTitle>
 
       {data.length === 0 ? (
-        <div className="flex h-72 items-center justify-center gap-2 text-sm text-slate-500">
+        <div className="flex h-64 items-center justify-center gap-2 text-sm text-slate-500 sm:h-72">
           {status === 'loading' ? (
             <>
               <Spinner /> Считаем финансовую модель…
@@ -48,27 +50,28 @@ export function FinanceChart(): JSX.Element {
         </div>
       ) : (
         <>
-          <div className="mb-2 flex flex-wrap gap-3">
+          <div className="mb-2 flex flex-wrap gap-2 sm:gap-3">
             <LegendChip color="#f43f5e" label="CAPEX" />
             <LegendChip color="#f59e0b" label="OPEX" />
             <LegendChip color="#10b981" label="Чистая прибыль (P50)" />
             <LegendChip color="#38bdf8" label="Кумулятивный поток (диск.)" />
           </div>
-          <div className="h-72">
+          <div className="h-64 sm:h-72">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
                 <CartesianGrid stroke="#1e293b" strokeDasharray="3 3" />
                 <XAxis
                   dataKey="label"
                   stroke="#475569"
-                  tick={{ fill: '#94a3b8', fontSize: 11 }}
+                  tick={{ fill: '#94a3b8', fontSize: isPhone ? 11 : 10 }}
                   tickLine={false}
+                  minTickGap={isPhone ? 26 : 18}
                 />
                 <YAxis
                   stroke="#475569"
-                  tick={{ fill: '#94a3b8', fontSize: 11 }}
+                  tick={{ fill: '#94a3b8', fontSize: isPhone ? 12 : 11 }}
                   tickLine={false}
-                  width={56}
+                  width={isPhone ? 54 : 48}
                   tickFormatter={(value: number) => `${(value / 1_000_000).toFixed(0)} млн`}
                 />
                 <Tooltip
@@ -96,7 +99,7 @@ export function FinanceChart(): JSX.Element {
               </ComposedChart>
             </ResponsiveContainer>
           </div>
-          <p className="mt-2 text-[11px] text-slate-500">
+          <p className="mt-2 text-xs text-slate-500 sm:text-[11px]">
             Диапазон P10–P90 чистой прибыли и волатильность рынка — в ответе API
             (<code>annual[].net_profit_p10_usd / p90</code>); на графике — медиана P50.
           </p>

@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 export function Card({ children, className = '' }: { children: ReactNode; className?: string }): JSX.Element {
   return (
     <div
-      className={`rounded-xl border border-slate-700/70 bg-slate-800/60 p-4 shadow-lg shadow-black/20 ${className}`}
+      className={`rounded-xl border border-slate-700/70 bg-slate-800/60 p-3 shadow-lg shadow-black/20 sm:p-4 ${className}`}
     >
       {children}
     </div>
@@ -18,8 +18,8 @@ export function CardTitle({
   right?: ReactNode;
 }): JSX.Element {
   return (
-    <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">{children}</h3>
+    <div className="mb-3 flex flex-wrap items-center justify-between gap-2 sm:mb-4">
+      <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 sm:text-[11px]">{children}</h3>
       {right}
     </div>
   );
@@ -66,7 +66,7 @@ export function Badge({ tone, children }: { tone: BadgeTone; children: ReactNode
     sky: 'bg-sky-500/15 text-sky-300 border-sky-500/30',
   };
   return (
-    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium ${tones[tone]}`}>
+    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium sm:text-[11px] ${tones[tone]}`}>
       {children}
     </span>
   );
@@ -102,7 +102,7 @@ export function ChartTooltip({
     (row) => row.dataKey !== 'ciBase' && row.dataKey !== 'ciWidth' && row.value !== undefined,
   );
   return (
-    <div className="rounded-lg border border-slate-700 bg-slate-900/95 px-3 py-2 text-xs shadow-xl">
+    <div className="max-w-[min(20rem,80vw)] rounded-lg border border-slate-700 bg-slate-900/95 px-3 py-2 text-xs shadow-xl">
       {label !== undefined && <div className="mb-1 font-semibold text-slate-300">{label}</div>}
       {rows.map((row, index) => (
         <div key={`${row.dataKey ?? row.name ?? index}`} className="flex items-center gap-2 py-0.5">

@@ -30,7 +30,7 @@ export function CarbonPanel(): JSX.Element {
   const yearsShown = carbon.annual.slice(0, 5);
 
   return (
-    <Card>
+    <Card className="min-w-0">
       <CardTitle
         right={
           <Badge tone="green">
@@ -43,35 +43,35 @@ export function CarbonPanel(): JSX.Element {
 
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
         <div className="rounded-lg border border-slate-700/70 bg-slate-900/60 p-3">
-          <p className="text-[11px] uppercase tracking-wider text-slate-500">Кредиты (net)</p>
+          <p className="text-xs uppercase tracking-wider text-slate-500 sm:text-[11px]">Кредиты (net)</p>
           <p className="mt-1 text-lg font-bold text-emerald-300">
             {fmtInt(carbon.totals.net_credits_t)} т
           </p>
-          <p className="text-[11px] text-slate-500">
+          <p className="text-xs text-slate-500 sm:text-[11px]">
             буфер {fmtInt(carbon.totals.buffer_credits_t)} т · CH₄{' '}
             {fmtInt(carbon.totals.ch4_destroyed_t)} т
           </p>
         </div>
         <div className="rounded-lg border border-slate-700/70 bg-slate-900/60 p-3">
-          <p className="text-[11px] uppercase tracking-wider text-slate-500">NPV, P50</p>
+          <p className="text-xs uppercase tracking-wider text-slate-500 sm:text-[11px]">NPV, P50</p>
           <p className="mt-1 text-lg font-bold text-slate-100">{fmtUsd(p50.npv_usd)}</p>
-          <p className="text-[11px] text-slate-500">
+          <p className="text-xs text-slate-500 sm:text-[11px]">
             цена {fmtUsd(p50.price_usd_per_t)}/т · лаг {carbon.params.verification_lag_months} мес
           </p>
         </div>
         <div className="rounded-lg border border-slate-700/70 bg-slate-900/60 p-3">
-          <p className="text-[11px] uppercase tracking-wider text-slate-500">Выручка, P50</p>
+          <p className="text-xs uppercase tracking-wider text-slate-500 sm:text-[11px]">Выручка, P50</p>
           <p className="mt-1 text-lg font-bold text-slate-100">{fmtUsd(p50.total_revenue_usd)}</p>
-          <p className="text-[11px] text-slate-500">
+          <p className="text-xs text-slate-500 sm:text-[11px]">
             P10–P90: {fmtUsd(p10.total_revenue_usd)} – {fmtUsd(p90.total_revenue_usd)}
           </p>
         </div>
       </div>
 
-      <div className="mt-3 overflow-x-auto">
-        <table className="w-full text-left text-xs">
+      <div className="-mx-1 mt-3 overflow-x-auto px-1">
+        <table className="w-full min-w-[420px] text-left text-xs tabular-nums">
           <thead>
-            <tr className="border-b border-slate-700 text-[11px] uppercase tracking-wider text-slate-500">
+            <tr className="border-b border-slate-700 text-xs uppercase tracking-wider text-slate-500 sm:text-[11px]">
               <th className="py-1.5 pr-2 font-medium">Год</th>
               <th className="py-1.5 pr-2 text-right font-medium">CH₄, м³</th>
               <th className="py-1.5 pr-2 text-right font-medium">CO₂e, т</th>
@@ -91,7 +91,7 @@ export function CarbonPanel(): JSX.Element {
         </table>
       </div>
 
-      <p className="mt-2 text-[11px] leading-relaxed text-slate-500">
+      <p className="mt-2 text-xs leading-relaxed text-slate-500 sm:text-[11px]">
         GWP {fmtNum(carbon.params.gwp, 0)} · буфер {fmtNum(carbon.params.buffer_share * 100, 0)} % ·
         выручка не входит в финансовую модель и не дублирует Фонд озеленения.
       </p>

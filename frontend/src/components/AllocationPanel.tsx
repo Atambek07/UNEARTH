@@ -29,7 +29,7 @@ export function AllocationPanel(): JSX.Element {
   const manualUsedMw = selectManualUsedMw({ manual });
 
   return (
-    <Card>
+    <Card className="min-w-0">
       <CardTitle
         right={
           <Badge tone={optimize.manual ? 'sky' : 'green'}>

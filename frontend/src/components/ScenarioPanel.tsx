@@ -63,19 +63,19 @@ export function ScenarioPanel(): JSX.Element {
           value={name}
           onChange={(event) => setName(event.target.value)}
           placeholder="Название сценария, например «H₂S 90 ppm, BTC 40k»"
-          className="flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-emerald-500 focus:outline-none"
+          className="min-h-11 flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-base text-slate-100 placeholder:text-slate-600 focus:border-emerald-500 focus:outline-none sm:min-h-0 sm:text-sm"
         />
         <button
           type="button"
           onClick={() => void onSave()}
           disabled={saving || !name.trim()}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-0"
         >
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
           Сохранить прогон
         </button>
       </div>
-      <p className="mt-1 text-[11px] text-slate-500">
+      <p className="mt-1 text-xs text-slate-500 sm:text-[11px]">
         Сохраняются параметры и дайджест метрик; сервер прогоняет симуляцию заново и фиксирует результат.
       </p>
 
@@ -91,10 +91,10 @@ export function ScenarioPanel(): JSX.Element {
         </p>
       ) : (
         <div className="mt-3 space-y-1">
-          <div className="grid grid-cols-[24px_1fr_110px_120px] gap-2 border-b border-slate-700 pb-1 text-[10px] uppercase tracking-wider text-slate-500">
+          <div className="grid grid-cols-[24px_1fr_auto] gap-2 border-b border-slate-700 pb-1 text-[11px] uppercase tracking-wider text-slate-500 sm:grid-cols-[24px_1fr_110px_130px] sm:text-[10px]">
             <span />
             <span>Название</span>
-            <span>Создан</span>
+            <span className="hidden sm:block">Создан</span>
             <span className="text-right">Действия</span>
           </div>
           {scenarios.map((scenario) => {
@@ -102,7 +102,7 @@ export function ScenarioPanel(): JSX.Element {
             return (
               <div
                 key={scenario.id}
-                className={`grid grid-cols-[24px_1fr_110px_120px] items-center gap-2 rounded px-1 py-1 text-xs ${
+                className={`grid grid-cols-[24px_1fr_auto] items-center gap-2 rounded px-1 py-1 text-xs sm:grid-cols-[24px_1fr_110px_130px] ${
                   checked ? 'bg-emerald-500/5' : ''
                 }`}
               >
@@ -111,22 +111,22 @@ export function ScenarioPanel(): JSX.Element {
                   checked={checked}
                   onChange={() => toggle(scenario.id)}
                   title="Выбрать для сравнения"
-                  className="h-4 w-4 accent-emerald-500"
+                  className="h-6 w-6 accent-emerald-500"
                 />
                 <span className="truncate text-slate-200">{scenario.name}</span>
-                <span className="text-[11px] text-slate-500">{fmtDateTime(scenario.created_at)}</span>
+                <span className="hidden text-[11px] text-slate-500 sm:block">{fmtDateTime(scenario.created_at)}</span>
                 <span className="flex justify-end gap-1">
                   <button
                     type="button"
                     onClick={() => void load(scenario.id)}
-                    className="rounded border border-slate-700 px-2 py-0.5 text-[11px] text-slate-300 hover:border-slate-500 hover:text-slate-100"
+                    className="min-h-10 rounded border border-slate-700 px-2.5 py-1 text-xs text-slate-300 hover:border-slate-500 hover:text-slate-100 sm:text-[11px]"
                   >
                     Загрузить
                   </button>
                   <button
                     type="button"
                     onClick={() => void remove(scenario.id)}
-                    className="rounded border border-slate-700 px-1.5 py-0.5 text-[11px] text-red-300 hover:border-red-500/60"
+                    className="min-h-10 rounded border border-slate-700 px-2 py-1 text-xs text-red-300 hover:border-red-500/60 sm:text-[11px]"
                     title="Удалить сценарий"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -143,7 +143,7 @@ export function ScenarioPanel(): JSX.Element {
           type="button"
           onClick={() => void runCompare()}
           disabled={selected.length < 2}
-          className="inline-flex items-center gap-2 rounded-lg border border-slate-700 px-3 py-1.5 text-xs text-slate-200 transition hover:border-slate-500 disabled:opacity-50"
+          className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-700 px-3 py-2 text-xs text-slate-200 transition hover:border-slate-500 disabled:opacity-50"
         >
           <GitCompare className="h-3.5 w-3.5" /> Сравнить выбранные ({selected.length})
         </button>
@@ -159,10 +159,10 @@ export function ScenarioPanel(): JSX.Element {
       </div>
 
       {compare ? (
-        <div className="mt-3 overflow-x-auto">
-          <table className="w-full text-left text-xs">
+        <div className="-mx-1 mt-3 overflow-x-auto px-1">
+          <table className="w-full min-w-[560px] text-left text-xs">
             <thead>
-              <tr className="border-b border-slate-700 text-[10px] uppercase tracking-wider text-slate-500">
+              <tr className="border-b border-slate-700 text-[11px] uppercase tracking-wider text-slate-500">
                 <th className="py-1.5 pr-2 font-medium">Метрика</th>
                 {compare.comparison.map((item) => (
                   <th key={item.id} className="py-1.5 pr-2 text-right font-medium">
@@ -195,7 +195,7 @@ export function ScenarioPanel(): JSX.Element {
             </tbody>
           </table>
           {compare.missing_ids.length > 0 ? (
-            <p className="mt-1 text-[11px] text-amber-300">
+            <p className="mt-1 text-xs text-amber-300 sm:text-[11px]">
               Не найдены сценарии: {compare.missing_ids.join(', ')}
             </p>
           ) : null}

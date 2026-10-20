@@ -34,7 +34,7 @@ export function PlanPanel(): JSX.Element {
       : 0;
 
   return (
-    <Card>
+    <Card className="min-w-0">
       <CardTitle
         right={
           <Badge tone={plan.totals.improvement_usd > 0 ? 'green' : 'slate'}>
@@ -47,31 +47,31 @@ export function PlanPanel(): JSX.Element {
 
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
         <div className="rounded-lg border border-slate-700/70 bg-slate-900/60 p-3">
-          <p className="text-[11px] uppercase tracking-wider text-slate-500">Рекомендуемый парк</p>
+          <p className="text-xs uppercase tracking-wider text-slate-500 sm:text-[11px]">Рекомендуемый парк</p>
           <p className="mt-1 text-lg font-bold text-slate-100">
             {maxAi} ИИ · {maxMiners} ASIC
           </p>
-          <p className="text-[11px] text-slate-500">максимум по месяцам горизонта</p>
+          <p className="text-xs text-slate-500 sm:text-[11px]">максимум по месяцам горизонта</p>
         </div>
         <div className="rounded-lg border border-slate-700/70 bg-slate-900/60 p-3">
-          <p className="text-[11px] uppercase tracking-wider text-slate-500">Выигрыш vs наивный</p>
+          <p className="text-xs uppercase tracking-wider text-slate-500 sm:text-[11px]">Выигрыш vs наивный</p>
           <p className={`mt-1 text-lg font-bold ${plan.totals.improvement_usd > 0 ? 'text-emerald-300' : 'text-slate-300'}`}>
             {fmtUsd(plan.totals.improvement_usd)}
           </p>
-          <p className="text-[11px] text-slate-500">{fmtPercent(gainPct)} к чистому результату</p>
+          <p className="text-xs text-slate-500 sm:text-[11px]">{fmtPercent(gainPct)} к чистому результату</p>
         </div>
         <div className="rounded-lg border border-slate-700/70 bg-slate-900/60 p-3">
-          <p className="text-[11px] uppercase tracking-wider text-slate-500">Резерв мощности</p>
+          <p className="text-xs uppercase tracking-wider text-slate-500 sm:text-[11px]">Резерв мощности</p>
           <p className="mt-1 text-lg font-bold text-amber-300">{fmtPercent(avgReserve)}</p>
-          <p className="text-[11px] text-slate-500">
+          <p className="text-xs text-slate-500 sm:text-[11px]">
             база {fmtPercent(plan.reserve_policy.base_share, 0)} → пик{' '}
             {fmtPercent(plan.reserve_policy.max_share, 0)}
           </p>
         </div>
       </div>
 
-      <div className="mt-3 overflow-x-auto">
-        <table className="w-full text-left text-xs">
+      <div className="-mx-1 mt-3 overflow-x-auto px-1">
+        <table className="w-full min-w-[520px] text-left text-xs tabular-nums">
           <thead>
             <tr className="border-b border-slate-700 text-[11px] uppercase tracking-wider text-slate-500">
               <th className="py-1.5 pr-2 font-medium">Мес</th>
@@ -99,7 +99,7 @@ export function PlanPanel(): JSX.Element {
         </table>
       </div>
 
-      <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500">
+      <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 sm:text-[11px]">
         <span className="inline-flex items-center gap-1">
           <GitBranch className="h-3.5 w-3.5" /> переключений: {plan.switch_events.length}
         </span>

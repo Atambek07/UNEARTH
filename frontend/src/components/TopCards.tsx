@@ -31,8 +31,8 @@ function StatCard({
     <Card className="flex items-start gap-3">
       <div className={`rounded-lg p-2 ${styles.icon}`}>{icon}</div>
       <div className="min-w-0 flex-1">
-        <p className="text-[11px] font-medium uppercase tracking-wider text-slate-400">{title}</p>
-        <p className={`mt-1 text-xl font-bold leading-tight ${styles.value}`}>{value}</p>
+        <p className="text-xs font-medium uppercase tracking-wider text-slate-400 sm:text-[11px]">{title}</p>
+        <p className={`mt-1 text-lg font-bold leading-tight sm:text-xl ${styles.value}`}>{value}</p>
         <p className="mt-1 text-xs leading-snug text-slate-400">{sub}</p>
       </div>
     </Card>

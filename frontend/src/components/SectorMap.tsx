@@ -48,11 +48,11 @@ export function SectorMap(): JSX.Element {
   const selected = sectors.find((s) => s.id === selectedId) ?? null;
 
   return (
-    <Card>
+    <Card className="min-w-0">
       <CardTitle
         right={
           sectorsData ? (
-            <span className="text-[11px] text-slate-500">
+            <span className="text-xs text-slate-500 sm:text-[11px]">
               месяц: {sectorsData.month} · статусы предсказывает RandomForest
             </span>
           ) : null
@@ -75,7 +75,7 @@ export function SectorMap(): JSX.Element {
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_280px]">
           <div>
             <div
-              className="grid gap-1.5"
+              className="grid gap-1 sm:gap-1.5"
               style={{ gridTemplateColumns: `repeat(${sectorsData?.cols ?? 8}, minmax(0, 1fr))` }}
             >
               {sectors.map((sector) => (
@@ -87,14 +87,14 @@ export function SectorMap(): JSX.Element {
                   )} м³/ч`}
                   aria-label={`${sector.id}: ${STATUS_LABEL[sector.status]}`}
                   onClick={() => setSelectedSector(sector.id === selectedId ? null : sector.id)}
-                  className={`aspect-square rounded-md transition hover:ring-2 hover:ring-slate-300/70 ${
+                  className={`aspect-square rounded-sm transition hover:ring-2 hover:ring-slate-300/70 sm:rounded-md ${
                     STATUS_COLOR[sector.status]
                   } ${sector.id === selectedId ? 'ring-2 ring-white' : ''}`}
                   style={{ opacity: 0.45 + 0.55 * Math.min(1, sector.ch4_flux_m3_h / maxFlux) }}
                 />
               ))}
             </div>
-            <div className="mt-3 flex flex-wrap gap-3">
+            <div className="mt-3 flex flex-wrap gap-2 sm:gap-3">
               {(Object.keys(STATUS_COLOR) as SectorStatus[]).map((key) => (
                 <LegendChip key={key} color={STATUS_HEX[key]} label={STATUS_LABEL[key]} />
               ))}

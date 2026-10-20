@@ -10,11 +10,13 @@ import {
 } from 'recharts';
 import { useSimulation } from '../store/simulationStore';
 import { fmtNum } from '../utils/format';
+import { useIsPhone } from '../utils/useMediaQuery';
 import { Card, CardTitle, ChartTooltip, LegendChip, Spinner } from './primitives';
 
 export function ForecastChart(): JSX.Element {
   const forecast = useSimulation((s) => s.forecast);
   const status = useSimulation((s) => s.status.forecast);
+  const isPhone = useIsPhone();
 
   const data = (forecast?.annual ?? []).map((point) => ({
     label: point.label,
@@ -26,11 +28,11 @@ export function ForecastChart(): JSX.Element {
   }));
 
   return (
-    <Card>
+    <Card className="min-w-0">
       <CardTitle
         right={
           forecast ? (
-            <span className="text-[11px] text-slate-500">
+            <span className="text-xs text-slate-500 sm:text-[11px]">
               модель: {forecast.meta.model} · ρ(AR1) = {forecast.meta.ar1_rho} · горизонт{' '}
               {forecast.annual.length} лет
             </span>
@@ -41,7 +43,7 @@ export function ForecastChart(): JSX.Element {
       </CardTitle>
 
       {data.length === 0 ? (
-        <div className="flex h-72 items-center justify-center gap-2 text-sm text-slate-500">
+        <div className="flex h-64 items-center justify-center gap-2 text-sm text-slate-500 sm:h-72">
           {status === 'loading' ? (
             <>
               <Spinner /> Считаем прогноз…
@@ -52,26 +54,27 @@ export function ForecastChart(): JSX.Element {
         </div>
       ) : (
         <>
-          <div className="mb-2 flex flex-wrap gap-3">
+          <div className="mb-2 flex flex-wrap gap-2 sm:gap-3">
             <LegendChip color="#64748b" label="LandGEM (физическая база)" dashed />
             <LegendChip color="#10b981" label="ML-прогноз с сезонностью" />
             <LegendChip color="rgba(16,185,129,0.30)" label="95 % доверительный интервал" />
           </div>
-          <div className="h-72">
+          <div className="h-64 sm:h-72">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
                 <CartesianGrid stroke="#1e293b" strokeDasharray="3 3" />
                 <XAxis
                   dataKey="label"
                   stroke="#475569"
-                  tick={{ fill: '#94a3b8', fontSize: 11 }}
+                  tick={{ fill: '#94a3b8', fontSize: isPhone ? 11 : 10 }}
                   tickLine={false}
+                  minTickGap={isPhone ? 26 : 18}
                 />
                 <YAxis
                   stroke="#475569"
-                  tick={{ fill: '#94a3b8', fontSize: 11 }}
+                  tick={{ fill: '#94a3b8', fontSize: isPhone ? 12 : 11 }}
                   tickLine={false}
-                  width={52}
+                  width={isPhone ? 48 : 44}
                   tickFormatter={(value: number) => fmtNum(value, 0)}
                 />
                 <Tooltip
@@ -113,7 +116,7 @@ export function ForecastChart(): JSX.Element {
               </ComposedChart>
             </ResponsiveContainer>
           </div>
-          <p className="mt-2 text-[11px] text-slate-500">
+          <p className="mt-2 text-xs text-slate-500 sm:text-[11px]">
             млн м³ CH₄/год. Сезонность: осенний пик влажности (мокрые бахчевые) повышает
             волатильность генерации — её учитывает Smart Load Balancing.
           </p>

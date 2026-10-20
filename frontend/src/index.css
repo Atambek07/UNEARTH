@@ -1,13 +1,45 @@
 @import "tailwindcss";
 
+:root {
+  color-scheme: dark;
+}
+
 html,
 body,
 #root {
   height: 100%;
 }
 
+/* Мобильная типографика: на телефонах пропорционально укрупняем rem-масштаб —
+   текст, отступы и touch-таргеты Tailwind растут вместе. Порог 640px ниже
+   первого breakpoint sm (40rem при 16px), поэтому tablet/desktop не затронуты. */
+@media (max-width: 639px) {
+  html {
+    font-size: 17px;
+  }
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+#root {
+  min-height: 100vh; /* фолбэк для старых iOS без поддержки dvh */
+  min-height: 100dvh;
+}
+
 body {
   background-color: #0f172a; /* slate-900 — база тёмной темы дашборда */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Тонкий тёмный скроллбар */

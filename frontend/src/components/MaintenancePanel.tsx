@@ -54,10 +54,10 @@ export function MaintenancePanel(): JSX.Element {
 };
 
   return (
-    <Card>
+    <Card className="min-w-0">
       <CardTitle
         right={
-          <span className="text-[11px] text-slate-500">
+          <span className="text-xs text-slate-500 sm:text-[11px]">
             износ {fmtNum(maintenance.wear_pct_month, 2)} %/мес при H₂S{' '}
             {fmtNum(maintenance.gas.h2s_ppm, 0)} ppm
           </span>
@@ -85,7 +85,7 @@ export function MaintenancePanel(): JSX.Element {
                   style={{ width: `${Math.min(100, Math.max(2, generator.health_score))}%` }}
                 />
               </div>
-              <p className="mt-2 text-[11px] text-slate-500">
+              <p className="mt-2 text-xs text-slate-500 sm:text-[11px]">
                 ресурс ≈ {fmtNum(generator.rul_months, 0)} мес · риск отказа 12 мес:{' '}
                 {fmtPercent(generator.failure_risk_12m, 0)}
               </p>
@@ -94,7 +94,7 @@ export function MaintenancePanel(): JSX.Element {
         </div>
 
         <div className="rounded-lg border border-slate-700/70 bg-slate-900/60 p-3 text-xs">
-          <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400 sm:text-[11px]">
             Скрубберы и OPEX
           </p>
           <Row label="Ресурс сорбента" value={`${fmtNum(maintenance.scrubber.life_months, 1)} мес`} />

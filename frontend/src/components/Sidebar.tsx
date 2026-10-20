@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Bot, Loader2, Play, RotateCcw, SlidersHorizontal } from 'lucide-react';
+import { Bot, Loader2, Play, RotateCcw, SlidersHorizontal, X } from 'lucide-react';
 import { PUE_DC, selectManualUsedMw, useSimulation } from '../store/simulationStore';
 import type { FiscalRegime, MarketProvider } from '../types';
 import { fmtNum } from '../utils/format';
@@ -7,7 +7,7 @@ import { fmtNum } from '../utils/format';
 function Section({ title, children }: { title: string; children: ReactNode }): JSX.Element {
   return (
     <section className="space-y-3">
-      <h3 className="text-[11px] font-semibold uppercase tracking-widest text-slate-500">{title}</h3>
+      <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-500 sm:text-[11px]">{title}</h3>
       {children}
     </section>
   );
@@ -32,18 +32,19 @@ function NumberField({
 }): JSX.Element {
   return (
     <label className="block">
-      <span className="mb-1 flex items-center justify-between text-xs text-slate-400">
+      <span className="mb-1 flex items-center justify-between gap-2 text-xs text-slate-400">
         <span>{label}</span>
-        {suffix ? <span className="text-slate-500">{suffix}</span> : null}
+        {suffix ? <span className="shrink-0 text-slate-500">{suffix}</span> : null}
       </span>
       <input
         type="number"
+        inputMode="decimal"
         value={value}
         min={min}
         max={max}
         step={step}
         onChange={(event) => onChange(Number(event.target.value))}
-        className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 transition focus:border-emerald-500 focus:outline-none"
+        className="min-h-11 w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-base text-slate-100 transition focus:border-emerald-500 focus:outline-none sm:min-h-0 sm:py-2 sm:text-sm"
       />
     </label>
   );
@@ -68,9 +69,9 @@ function SliderField({
 }): JSX.Element {
   return (
     <label className="block">
-      <span className="mb-1 flex items-center justify-between text-xs text-slate-400">
+      <span className="mb-1 flex items-center justify-between gap-2 text-xs text-slate-400">
         <span>{label}</span>
-        <span className="font-medium text-emerald-400">{format(value)}</span>
+        <span className="shrink-0 font-medium text-emerald-400">{format(value)}</span>
       </span>
       <input
         type="range"
@@ -79,13 +80,16 @@ function SliderField({
         step={step}
         value={value}
         onChange={(event) => onChange(Number(event.target.value))}
-        className="w-full accent-emerald-500"
+        className="h-9 w-full cursor-pointer accent-emerald-500 sm:h-6"
       />
     </label>
   );
 }
 
-export function Sidebar(): JSX.Element {
+const selectClass =
+  'min-h-11 w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-base text-slate-100 focus:border-emerald-500 focus:outline-none sm:min-h-0 sm:py-2 sm:text-sm';
+
+export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void }): JSX.Element {
   const inputs = useSimulation((s) => s.inputs);
   const market = useSimulation((s) => s.market);
   const h2sPpm = useSimulation((s) => s.h2sPpm);
@@ -110,17 +114,37 @@ export function Sidebar(): JSX.Element {
   const manualUsedMw = selectManualUsedMw({ manual });
 
   const modeButtonClass = (active: boolean): string =>
-    `flex items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition ${
+    `flex min-h-10 items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition ${
       active ? 'bg-emerald-500 text-slate-950' : 'text-slate-400 hover:text-slate-200'
     }`;
 
+  const handleRun = (): void => {
+    void run();
+    onClose();
+  };
+
   return (
-    <aside className="flex w-80 shrink-0 flex-col overflow-y-auto border-r border-slate-800 bg-slate-950">
-      <div className="border-b border-slate-800 px-4 py-4">
-        <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-200">
-          <SlidersHorizontal className="h-4 w-4 text-emerald-400" /> ML Controls
-        </h2>
-        <p className="mt-1 text-xs text-slate-500">Параметры полигона и балансировки</p>
+    <aside
+      className={`fixed inset-y-0 left-0 z-40 flex w-80 max-w-[86vw] flex-col overflow-y-auto border-r border-slate-800 bg-slate-950 transition-transform duration-200 ease-out lg:sticky lg:top-0 lg:z-auto lg:h-dvh lg:max-w-none lg:translate-x-0 lg:self-start ${
+        open ? 'translate-x-0 shadow-2xl shadow-black/50' : '-translate-x-full'
+      }`}
+      aria-label="Параметры симуляции"
+    >
+      <div className="flex items-start justify-between gap-2 border-b border-slate-800 px-4 pt-[calc(1rem+env(safe-area-inset-top))] pb-4">
+        <div>
+          <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-200">
+            <SlidersHorizontal className="h-4 w-4 text-emerald-400" /> ML Controls
+          </h2>
+          <p className="mt-1 text-xs text-slate-500">Параметры полигона и балансировки</p>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Закрыть параметры"
+          className="-mr-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-800 hover:text-slate-200 lg:hidden"
+        >
+          <X className="h-5 w-5" />
+        </button>
       </div>
 
       <div className="flex-1 space-y-6 px-4 py-4">
@@ -219,14 +243,14 @@ export function Sidebar(): JSX.Element {
           <select
             value={marketProvider}
             onChange={(event) => setMarketProvider(event.target.value as MarketProvider)}
-            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 focus:outline-none"
+            className={selectClass}
           >
             <option value="synthetic">Синтетика (детерминизм)</option>
             <option value="auto">Auto: live → синтетика</option>
             <option value="live">Live: CoinGecko + mempool.space</option>
           </select>
           {marketQuote ? (
-            <p className="text-[11px] leading-snug text-slate-500">
+            <p className="text-xs leading-snug text-slate-500 sm:text-[11px]">
               Источник:{' '}
               <b className={marketQuote.source === 'live' ? 'text-emerald-300' : 'text-slate-300'}>
                 {marketQuote.source === 'live' ? 'live' : 'синтетика'}
@@ -239,8 +263,9 @@ export function Sidebar(): JSX.Element {
                 : ''}
             </p>
           ) : null}
-          <p className="text-[11px] leading-snug text-slate-600">
-            В live-режиме курс BTC и хешрейт берутся с публичных API; при сбое — откат на синтетику с пометкой.
+          <p className="text-xs leading-snug text-slate-500 sm:text-[11px]">
+            В live-режиме курс BTC и хешрейт берутся с публичных API; при сбое — откат на синтетику
+            с пометкой.
           </p>
         </Section>
 
@@ -248,7 +273,7 @@ export function Sidebar(): JSX.Element {
           <select
             value={fiscalRegime}
             onChange={(event) => setFiscalRegime(event.target.value as FiscalRegime)}
-            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 focus:outline-none"
+            className={selectClass}
           >
             <option value="kr_htp">ПВТ: 1 % выручки IT, майнинг отдельно</option>
             <option value="kz_aifc">Astana Hub (KZ): сравнение режимов</option>
@@ -259,10 +284,18 @@ export function Sidebar(): JSX.Element {
 
         <Section title="Режим распределения">
           <div className="grid grid-cols-2 gap-1 rounded-lg border border-slate-700 bg-slate-900 p-1">
-            <button type="button" onClick={() => setMode('manual')} className={modeButtonClass(mode === 'manual')}>
+            <button
+              type="button"
+              onClick={() => setMode('manual')}
+              className={modeButtonClass(mode === 'manual')}
+            >
               <SlidersHorizontal className="h-3.5 w-3.5" /> Manual
             </button>
-            <button type="button" onClick={() => setMode('auto')} className={modeButtonClass(mode === 'auto')}>
+            <button
+              type="button"
+              onClick={() => setMode('auto')}
+              className={modeButtonClass(mode === 'auto')}
+            >
               <Bot className="h-3.5 w-3.5" /> AI Auto
             </button>
           </div>
@@ -300,12 +333,12 @@ export function Sidebar(): JSX.Element {
         </Section>
       </div>
 
-      <div className="space-y-2 border-t border-slate-800 px-4 py-4">
+      <div className="sticky bottom-0 space-y-2 border-t border-slate-800 bg-slate-950/95 px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur lg:pb-3">
         <button
           type="button"
-          onClick={() => void run()}
+          onClick={handleRun}
           disabled={running}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400 active:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {running ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
           {running ? 'Симуляция…' : 'Запустить симуляцию'}
@@ -314,7 +347,7 @@ export function Sidebar(): JSX.Element {
           type="button"
           onClick={resetToBishkekDefaults}
           disabled={running}
-          className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-700 px-4 py-2 text-xs text-slate-300 transition hover:border-slate-500 hover:text-slate-100 disabled:opacity-60"
+          className="flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-slate-700 px-3 py-2 text-xs text-slate-300 transition hover:border-slate-500 hover:text-slate-100 disabled:opacity-60"
         >
           <RotateCcw className="h-3.5 w-3.5" /> Дефолты Бишкека (20 Мт · L₀ 75 · k 0.03)
         </button>
