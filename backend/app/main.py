@@ -22,7 +22,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://unearth-le7z.onrender.com/", "http://localhost:8000"],
+    allow_origins=["https://unearth-le7z.onrender.com/", "https://unearth-ruddy.vercel.app", "http://localhost:8000"],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
